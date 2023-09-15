@@ -51,7 +51,9 @@ CHIP CPU {
 
     Mux16(a=A, b=inM, sel=a, out=AM);
 
-    DRegister(in=coutM, load=instruction[4], out=D);  // Dレジスタ
+
+    Mux(a=false, b=instruction[4], sel=i, out=culD);
+    DRegister(in=coutM, load=culD, out=D);  // Dレジスタ
 
     ALU(x=D, y=AM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=coutM, zr=outIsZero, ng=OutNegitive);
 
