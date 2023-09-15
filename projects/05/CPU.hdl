@@ -39,5 +39,37 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
-    // Put your code here:
+    
+    // デコーダ
+    Or16(a=instruction, b=instruction, out=decode, out[15]=i, out[12]=a, out[6..11]=c, out[3..5]=d, out[0..2]=j);  
+    DMux8Way(in=true, sel=j, a=jnull, b=JGT, c=JEQ, d=JGE, e=JLT, f=JNE, g=JLE, h=JMP);  // jump領域の解析
+    DMux8Way(in=true, sel=d, a=dnull, b=dM, c=dD, d=dMD, e=dA, f=dAM, g=dAD, h=dAMD);   // dest領域の解析
+    
+    Mux16(a=instruction, b=coutM, sel=i, out=AC);
+    Mux(a=true, b=instruction[5], sel=i, out=Aload);
+    ARegister(in=AC, load=Aload, out=A, out[0..14]=addressM);    // Aレジスタ
+
+    Mux16(a=A, b=inM, sel=a, out=AM);
+
+    DRegister(in=coutM, load=instruction[4], out=D);  // Dレジスタ
+
+    ALU(x=D, y=AM, zx=instruction[11], nx=instruction[10], zy=instruction[9], ny=instruction[8], f=instruction[7], no=instruction[6], out=outM, out=coutM, zr=outIsZero, ng=OutNegitive);
+
+    Mux(a=false, b=instruction[3], sel=i, out=writeM);
+
+    Mux(a=false, b=outIsZero, sel=instruction[1], out=tj1);
+    Mux(a=tj1, b=OutNegitive, sel=instruction[2], out=tj2);
+    Not(in=OutNegitive, out=OutPositive);
+    Xor(a=OutPositive, b=outIsZero, out=pisNotZero);
+    Mux(a=tj2, b=OutPositive, sel=instruction[0], out=tj3);
+    Mux(a=tj3, b=pisNotZero, sel=JGT, out=tj4);
+    Xor(a=OutNegitive, b=outIsZero, out=nisNotZero);
+    Mux(a=tj4, b=nisNotZero, sel=JLE, out=tj5);
+    Mux(a=tj5, b=true, sel=JMP, out=tj6);
+    Not(in=outIsZero, out=outNotZero);
+    Mux(a=tj6, b=outNotZero, sel=JNE, out=tj7);
+    Mux(a=false, b=tj7, sel=i, out=PCload);
+    PC(in=A, load=PCload, inc=true, reset=reset,  out[0..14]=pc);
+
+    
 }
