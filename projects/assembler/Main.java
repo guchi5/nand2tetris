@@ -1,7 +1,9 @@
-package projects.assembler;
-
 public class Main {
     public static void main(String args[]){
-        System.out.println("hello world");
+        if(args.length != 1){
+            return;
+        }
+
+        Parser parser = new Parser(args[0]);
     }
 }

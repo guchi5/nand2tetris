@@ -1,5 +1,3 @@
-package projects.assembler;
-
 public class SymbolTable {
     SymbolTable(){
 

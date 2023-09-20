@@ -1,4 +1,3 @@
-package projects.assembler;
 
 public class Code {
     String dest(String mnemonic){
