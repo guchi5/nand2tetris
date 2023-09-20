@@ -32,8 +32,8 @@ public class Parser{
 
         while(hasMoreCommands()){
             advance();
-            if(commandType()==0||commandType()==2){
-            System.out.println(this.command+"->"+symbol());
+            if(commandType()==1 && jump() != null){
+            System.out.println(this.command+"->"+jump());
             }
         }
     }
@@ -64,16 +64,34 @@ public class Parser{
             return this.command.replaceAll("[()]", "");
         }
     }
-    // [TODO] destの実装
+
     String dest(){
-        return null;
+        if(this.command.split("=").length==2){
+            return this.command.split("=")[0];
+        }else{
+            return null;
+        }
     }
 
     String comp(){
-        return null;
+        String[] comp = this.command.split("[;=]");
+        if(comp.length==3){
+            return comp[1];
+        }else{
+            if(this.command.split("=").length==2){
+                return this.command.split("=")[1];
+            }else{
+                return this.command.split(";")[0];
+            }
+        }
     }
 
     String jump(){
-        return null;
+        if(this.command.split(";").length==2){
+            return this.command.split(";")[1];
+        }else{
+            return null;
+        }
+
     }
 }
