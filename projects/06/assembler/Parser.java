@@ -5,9 +5,9 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class Parser{
-    Queue<String> commands;
-    String command;
-    final Map<String, Integer> command_type = new HashMap<String, Integer>() { 
+    private Queue<String> commands;
+    private String command;
+    private final Map<String, Integer> command_type = new HashMap<String, Integer>() { 
         {
             put("A_COMMAND", 0);
             put("C_COMMAND", 1);
@@ -30,12 +30,6 @@ public class Parser{
 			ex.printStackTrace();
 		}
 
-        while(hasMoreCommands()){
-            advance();
-            if(commandType()==1 && jump() != null){
-            System.out.println(this.command+"->"+jump());
-            }
-        }
     }
     
     boolean hasMoreCommands(){
@@ -92,6 +86,9 @@ public class Parser{
         }else{
             return null;
         }
+    }
 
+    Integer getCommandNum(String type){
+        return this.command_type.get(type);
     }
 }
